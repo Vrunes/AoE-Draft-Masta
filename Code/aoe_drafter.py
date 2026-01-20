@@ -29,16 +29,16 @@ class AoEApplication(tk.Tk):
 
 
 
-    def page_1(self):
+    def page_1(self) -> None:
         button = ttk.Button(self.tab1, text="Set name", command=self.show_name).pack(side=tk.TOP, anchor="e", padx=140, pady=25)
         button2 = ttk.Button(self.tab1, text="Load map file", command=self.load_maps_file).place(x=100, y=65)
         
     
-    def page_2(self):
+    def page_2(self) -> None:
         pass
         # return label_map_pool2
     
-    def pages_desc(self):
+    def pages_desc(self) -> None:
         label_map_pool = ttk.Label(self.tab1, text="Map pool", font=("Times New Roman", 22)).pack(side=tk.TOP, anchor="w", padx=50, pady=25)
         label_best_civs = ttk.Label(self.tab2, text="Best civs per map", font=("Times New Roman", 22)).pack(side=tk.TOP, anchor="w", padx=50, pady=25)
         label_civs_draft = ttk.Label(self.tab3, text="Civs draft", font=("Times New Roman", 22)).pack(side=tk.TOP, anchor="w", padx=50, pady=25)
@@ -55,7 +55,7 @@ class AoEApplication(tk.Tk):
         # frame2 = InputForm(self)
         # frame2.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
     
-    def recreate_page(self):
+    def recreate_page(self) -> None:
         """ needs testing """
         print(len(self.tab2.pack_slaves()), self.tab2.pack_slaves())
         xd = [self.tab2.pack_slaves()[0].destroy()]
@@ -78,8 +78,8 @@ class AoEApplication(tk.Tk):
     def load_maps_file(self) -> None:
         filename = askopenfile()
         
-        read_file = filename.read()
         try:
+            read_file = filename.read()
             print(json.loads(read_file))
             return json.loads(read_file)
         except ValueError as e:
