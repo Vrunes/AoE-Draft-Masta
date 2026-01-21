@@ -1,6 +1,7 @@
 import json
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from tkinter.simpledialog import askstring
 from tkinter.filedialog import askopenfile
 
@@ -21,9 +22,10 @@ class FormatsCombobox(ttk.Combobox):
         self.formats_box.set("Select game format")
         self.formats_box.pack(side=tk.TOP, anchor="e", padx=140, pady=20)
     
-    def get_selected_key(self, event=None):
+    def get_selected_key(self, event=None) -> str:
         self.key = self.formats_box.get()
         print(self.key)
+        # messagebox.showinfo("window name", f"Format selected: {self.key}") # to remove/change
         return self.key
 
 
