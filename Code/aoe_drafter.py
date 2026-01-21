@@ -24,14 +24,26 @@ class AoEApplication(tk.Tk):
         self.pages_desc()
         self.page_1()
         self.page_32 = self.page_2()
+        self.maps_json: str = ""
+        self.game_format: str = ""
         print(self.page_32)
         # frame.grid(row=0, column=0, padx=1000, pady=15)
 
 
 
     def page_1(self) -> None:
-        button = ttk.Button(self.tab1, text="Set name", command=self.show_name).pack(side=tk.TOP, anchor="e", padx=140, pady=25)
+        button = ttk.Button(self.tab1, text="Set name", command=self.set_show_name).pack(side=tk.TOP, anchor="e", padx=140, pady=25)
         button2 = ttk.Button(self.tab1, text="Load map file", command=self.load_maps_file).place(x=100, y=65)
+        game_formats: tuple[str] = ("Bo1", "Bo3", "Bo5", "Bo7", "Bo9", "Custom - not implemented")
+        # ToDo: add "Custom" game format
+       
+        formats_box = ttk.Combobox(self.tab1, state="readonly", width=22,textvariable="test123", values=game_formats)
+        # print(formats_box.current())
+        test123: str = ""
+        formats_box.set("Select game format")
+        print(formats_box.get())
+        formats_box.pack(side=tk.TOP, anchor="e", padx=140, pady=20)
+
         
     
     def page_2(self) -> None:
@@ -67,7 +79,7 @@ class AoEApplication(tk.Tk):
         self.tabControl.add(self.tab4, text="Page 4")
         self.tabControl.pack(expand=1, fill="both")
 
-    def show_name(self) -> None:
+    def set_show_name(self) -> None:
         name = askstring("Input", "Enter your name")
 
         if len(name) > 0: 
@@ -81,7 +93,7 @@ class AoEApplication(tk.Tk):
         try:
             read_file = filename.read()
             print(json.loads(read_file))
-            return json.loads(read_file)
+            self.maps_json = json.loads(read_file)
         except ValueError as e:
             print("Invalid json!!")
             return None # or: raise
