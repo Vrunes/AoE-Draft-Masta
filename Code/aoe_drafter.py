@@ -10,6 +10,23 @@ def main() -> None:
     app.mainloop()
 
 
+class FormatsCombobox(ttk.Combobox):
+    def __init__(self, parent):
+        self.parent = parent
+        self.key: str = ""
+        game_formats: list[str] = ["Bo1", "Bo3", "Bo5", "Bo7", "Bo9", "Custom - not implemented"]
+        # ToDo: add "Custom" game format
+        self.formats_box = ttk.Combobox(parent, state="readonly", width=22, values=game_formats)
+        self.formats_box.bind("<<ComboboxSelected>>", self.get_selected_key)
+        self.formats_box.set("Select game format")
+        self.formats_box.pack(side=tk.TOP, anchor="e", padx=140, pady=20)
+    
+    def get_selected_key(self, event=None):
+        self.key = self.formats_box.get()
+        print(self.key)
+        return self.key
+
+
 class AoEApplication(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -26,7 +43,8 @@ class AoEApplication(tk.Tk):
         self.page_32 = self.page_2()
         self.maps_json: str = ""
         self.game_format: str = ""
-        print(self.page_32)
+
+        # print(self.page_32)
         # frame.grid(row=0, column=0, padx=1000, pady=15)
 
 
@@ -34,16 +52,7 @@ class AoEApplication(tk.Tk):
     def page_1(self) -> None:
         button = ttk.Button(self.tab1, text="Set name", command=self.set_show_name).pack(side=tk.TOP, anchor="e", padx=140, pady=25)
         button2 = ttk.Button(self.tab1, text="Load map file", command=self.load_maps_file).place(x=100, y=65)
-        game_formats: tuple[str] = ("Bo1", "Bo3", "Bo5", "Bo7", "Bo9", "Custom - not implemented")
-        # ToDo: add "Custom" game format
-       
-        formats_box = ttk.Combobox(self.tab1, state="readonly", width=22,textvariable="test123", values=game_formats)
-        # print(formats_box.current())
-        test123: str = ""
-        formats_box.set("Select game format")
-        print(formats_box.get())
-        formats_box.pack(side=tk.TOP, anchor="e", padx=140, pady=20)
-
+        game_format = FormatsCombobox(self.tab1)
         
     
     def page_2(self) -> None:
@@ -67,6 +76,9 @@ class AoEApplication(tk.Tk):
         # frame2 = InputForm(self)
         # frame2.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
     
+
+
+
     def recreate_page(self) -> None:
         """ needs testing """
         print(len(self.tab2.pack_slaves()), self.tab2.pack_slaves())
