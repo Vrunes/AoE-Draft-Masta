@@ -1,3 +1,51 @@
 {
-	"name": "RedBull Wololo Londinium"
+    "name": "RedBull Wololo Londinium",
+
+    "maps": [
+        {
+			"map_nr": 1,
+            "name": "Baldland",
+            "xd2": "xd2"
+        },
+		{
+			"map_nr": 2,
+            "name": "Dry Arabia",
+            "xd2": "xd2"
+        }, 
+		{
+			"map_nr": 3,
+            "name": "Frisian Marshes",
+            "xd2": "xd2"
+        }, 
+		{
+			"map_nr": 4,
+            "name": "Front Range",
+            "xd2": "xd2"
+        }, 
+		{
+			"map_nr": 5,
+            "name": "Hill and Dale",
+            "xd2": "xd2"
+        }, 
+		{
+			"map_nr": 6,
+            "name": "Holy Island",
+            "xd2": "xd2"
+        }, 
+		{
+			"map_nr": 7,
+            "name": "Kawasan",
+            "xd2": "xd2"
+        }, 
+		{
+			"map_nr": 8,
+            "name": "King of the Hill",
+            "xd2": "xd2"
+        }, 
+		{
+			"map_nr": 9,
+            "name": "Socotra",
+            "xd2": "xd2"
+        }
+    ]
 }
