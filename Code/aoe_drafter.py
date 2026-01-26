@@ -21,7 +21,7 @@ class FormatsCombobox(ttk.Combobox):
         self.formats_box.bind("<<ComboboxSelected>>", self.get_selected_key)
         self.formats_box.set("Select game format")
         # self.formats_box.pack(side=tk.TOP, anchor="e", padx=140, pady=20)
-        self.formats_box.grid(row=1, column=0, sticky='e', padx=1000, pady=25)
+        self.formats_box.grid(row=1, column=0, sticky='w', padx=1000, pady=25)
     
     def get_selected_key(self, event=None) -> str:
         self.key = self.formats_box.get()
@@ -57,7 +57,7 @@ class AoEApplication(tk.Tk):
     def page_1(self) -> None:
         top_frame = tk.Frame(self.tab1, width=100, height=10, bg='red')
         # top_frame.grid(row=0, column=0, padx=40, pady=120)
-        button = ttk.Button(self.tab1, text="Set name", command=self.set_show_name).grid(row=0, column=0, sticky="wens", padx=1000, pady=25)
+        button = ttk.Button(self.tab1, text="Set name", command=self.set_show_name).grid(row=0, column=0, sticky="w", padx=1000, pady=25)
         button2 = ttk.Button(self.tab1, text="Load map file", command=self.load_maps_file).grid(row=1, column=0, sticky='w', padx=50, pady=25)
         game_format = FormatsCombobox(self.tab1)
         
@@ -86,10 +86,10 @@ class AoEApplication(tk.Tk):
 
 
 
-    # def recreate_page(self) -> None:
-    #     """ needs testing """
-    #     print(len(self.tab2.pack_slaves()), self.tab2.pack_slaves())
-    #     xd = [self.tab2.pack_slaves()[0].destroy()]
+    def recreate_page(self) -> None:
+        """ needs testing """
+        print(len(self.tab2.pack_slaves()), self.tab2.pack_slaves())
+        xd = [self.tab2.pack_slaves()[0].destroy()]
 
     def initialize_pages(self) -> None:
         self.tabControl.add(self.tab1, text="Page 1")
