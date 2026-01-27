@@ -1,4 +1,5 @@
 import json
+import os
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -43,10 +44,12 @@ class AoEApplication(tk.Tk):
         self.tab4 = ttk.Frame(self.tabControl)
 
         self.initialize_pages()
-        self.pages_desc()
+        
         self.page_1()
+        self.pages_desc()
         self.page_2()
         self.maps_json: str = ""
+        self.maps_json_path: str = ""
         self.game_format: str = ""
 
         # print(self.page_32)
@@ -55,11 +58,15 @@ class AoEApplication(tk.Tk):
 
 
     def page_1(self) -> None:
-        top_frame = tk.Frame(self.tab1, width=100, height=10, bg='red')
-        # top_frame.grid(row=0, column=0, padx=40, pady=120)
-        button = ttk.Button(self.tab1, text="Set name", command=self.set_show_name).grid(row=0, column=0, sticky="w", padx=1000, pady=25)
-        button2 = ttk.Button(self.tab1, text="Load map file", command=self.load_maps_file).grid(row=1, column=0, sticky='w', padx=50, pady=25)
-        game_format = FormatsCombobox(self.tab1)
+        self.top_frame = tk.Frame(self.tab1, width=0, height=0, bg='lightblue')
+        self.top_frame.grid(row=0, column=0, padx=0, pady=0)
+        # self.bottom_frame = tk.Frame(self.tab1, width=0, height=0, bg='lightblue')
+        # self.bottom_frame.grid(row=1, column=0, padx=0, pady=0)
+        button_set_name = ttk.Button(self.top_frame, text="Set name", command=self.set_show_name).grid(row=0, column=0, sticky="e", padx=1000, pady=25)
+        # button_set_name = ttk.Button(self.bottom_frame, text="Set name bottom frame", command=None).grid(row=0, column=0, sticky="e", padx=0, pady=0)
+        button_save = ttk.Button(self.top_frame, text="Save", command=self.set_show_name).grid(row=1, column=0, sticky="w", padx=900, pady=25)
+        button2 = ttk.Button(self.top_frame, text="Load map file", command=self.load_maps_file).grid(row=1, column=0, sticky='w', padx=50, pady=25)
+        game_format = FormatsCombobox(self.top_frame)
         
     
     def page_2(self) -> None:
@@ -67,7 +74,7 @@ class AoEApplication(tk.Tk):
         # return label_map_pool2
     
     def pages_desc(self) -> None:
-        label_map_pool = ttk.Label(self.tab1, text="Map pool", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='w', padx=50, pady=25)
+        label_map_pool = ttk.Label(self.top_frame, text="Map pool", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='w', padx=50, pady=25)
         label_best_civs = ttk.Label(self.tab2, text="Best civs per map", font=("Times New Roman", 22)).pack(side=tk.TOP, anchor="w", padx=50, pady=25)
         label_civs_draft = ttk.Label(self.tab3, text="Civs draft", font=("Times New Roman", 22)).pack(side=tk.TOP, anchor="w", padx=50, pady=25)
         label_game_draft = ttk.Label(self.tab4, text="Game draft", font=("Times New Roman", 22)).pack(side=tk.TOP, anchor="w", padx=50, pady=25)
@@ -106,7 +113,7 @@ class AoEApplication(tk.Tk):
         name = askstring("Input", "Enter your name")
 
         if len(name) > 0: 
-                label = ttk.Label(self.tab1, text=f"Player: {name}",font=("Times New Roman", 22))
+                label = ttk.Label(self.top_frame, text=f"Player: {name}",font=("Times New Roman", 22))
                 label.grid(row=0, column=0, padx=1000, pady=25, sticky="nsew")
 
     def load_maps_file(self) -> None:
@@ -115,16 +122,34 @@ class AoEApplication(tk.Tk):
         try:
             read_file = filename.read()
             print(json.loads(read_file))
-            self.maps_json = json.loads(read_file)
+            file_content = json.loads(read_file)
+            # print(read_file)
+            self.maps_json = file_content
+            # self.maps_json = read_file
+            # print(self.maps_json['maps'])
+            self.maps_json_path = self.maps_json_path.join(os.getcwd() + "\\Maps\\" + file_content['name'] + "\\")
+            self.verify_maps_exist()
         except ValueError as e:
             print("Invalid json!!")
             return None # or: raise
+    
+    def verify_maps_exist(self) -> None:
+        missing_map_images: list[str] = []
+
+        for map in self.maps_json['maps']:
+            map_image_png = self.maps_json_path + map['name'] + ".png"
+            map_image_jpg = self.maps_json_path + map['name'] + ".jpg"
+            if not ((os.path.isfile(map_image_png)) or (os.path.isfile(map_image_jpg))):
+                missing_map_images.append(map['name'])
+        if len(missing_map_images) > 0:
+            print("missing map images: ", missing_map_images)
+
+
 
         # print(name)
     # def main_window(self):
     #     xd = tk.Label(text="Test2", width=170, height=45)
     #     xd.pack()
-
 
 
 
