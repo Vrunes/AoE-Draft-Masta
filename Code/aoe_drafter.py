@@ -65,8 +65,8 @@ class AoEApplication(tk.Tk):
         game_format = FormatsCombobox(self.page_1_top_frame)
         button_set_name = ttk.Button(self.page_1_top_frame, text="Set name", command=self.set_show_name).grid(row=0, column=1, sticky="ne", padx=130, pady=25)
         button_save = ttk.Button(self.page_1_top_frame, text="Save", command=self.set_show_name, ).grid(row=0, column=1, sticky="ne", padx=240, pady=85)
-        button_save = ttk.Button(self.page_1_bottom_frame, text="Save", command=self.set_show_name, ).grid(row=0, column=1, sticky="ns", padx=240, pady=0)
-        button_save = ttk.Button(self.page_1_bottom_frame, text="Save", command=self.set_show_name, ).grid(row=1, column=1, sticky="ns", padx=240, pady=0)
+        # button_save = ttk.Button(self.page_1_bottom_frame, text="Save", command=self.set_show_name, ).grid(row=0, column=1, sticky="ns", padx=240, pady=0)
+        # button_save = ttk.Button(self.page_1_bottom_frame, text="Save", command=self.set_show_name, ).grid(row=1, column=1, sticky="ns", padx=240, pady=0)
 
         self.page_1_top_frame.columnconfigure(0, weight=1)
         self.page_1_top_frame.columnconfigure(1, weight=1)
@@ -76,6 +76,12 @@ class AoEApplication(tk.Tk):
         self.page_1_bottom_frame.columnconfigure(1, weight=1)
         self.page_1_bottom_frame.rowconfigure(0, weight=1)
         self.page_1_bottom_frame.rowconfigure(1, weight=1)
+        self.page_1_bottom_frame.rowconfigure(2, weight=1)
+        self.page_1_bottom_frame.rowconfigure(3, weight=1)
+        self.page_1_bottom_frame.rowconfigure(4, weight=1)
+        self.page_1_bottom_frame.rowconfigure(5, weight=1)
+        self.page_1_bottom_frame.rowconfigure(6, weight=1)
+        self.page_1_bottom_frame.rowconfigure(7, weight=1)
         self.page_1_top_frame.pack(expand=False, fill='both', side="top")
         self.page_1_bottom_frame.pack(expand=True, fill='both', side="bottom")
         
@@ -160,10 +166,62 @@ class AoEApplication(tk.Tk):
         if len(self.maps_json['maps']) > 16:
             print(f"Map count exceeds supported 16 maps generation. Maps in file: {len(self.maps_json['maps'])}")
             return
-        for map in self.maps_json['maps']:
-            print(map['name'])
-            button = ttk.Checkbutton(self.top_frame, text=f"{map['name']}").grid(row=1, column=0, padx=40*i, pady=10, sticky="nw")
-            i+= 1
+        else:
+            for map in self.maps_json['maps']:
+                if i == 0:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=0, column=0, padx=50, pady=0, sticky="nw")
+                elif i == 1:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=1, column=0, padx=50, pady=0, sticky="nw")
+                elif i == 2:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=2, column=0, padx=50, pady=0, sticky="nw")
+                elif i == 3:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=3, column=0, padx=50, pady=0, sticky="nw")
+                elif i == 4:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=0, column=1, padx=50, pady=0, sticky="nw")
+                elif i == 5:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=1, column=1, padx=50, pady=0, sticky="nw")
+                elif i == 6:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=2, column=1, padx=50, pady=0, sticky="nw")
+                elif i == 7:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=3, column=1, padx=50, pady=0, sticky="nw")
+                elif i == 8:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=4, column=0, padx=50, pady=0, sticky="nw")
+                elif i == 9:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=5, column=0, padx=50, pady=0, sticky="nw")
+                elif i == 10:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=6, column=0, padx=50, pady=0, sticky="nw")
+                elif i == 11:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=7, column=0, padx=50, pady=0, sticky="nw")
+                elif i == 12:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=4, column=1, padx=50, pady=0, sticky="nw")
+                elif i == 13:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=5, column=1, padx=50, pady=0, sticky="nw")
+                elif i == 14:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=6, column=1, padx=50, pady=0, sticky="nw")
+                elif i == 15:
+                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['map_nr']}")
+                    button.grid(row=7, column=1, padx=50, pady=0, sticky="nw")
+                i+=1
+        # for map in self.maps_json['maps']:
+        #     print(map['name'])
+        #     button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+        #     button.grid(row=1, column=0, padx=40*i, pady=0, sticky="nw")
+        #     i+= 1
 
 
         # print(name)
