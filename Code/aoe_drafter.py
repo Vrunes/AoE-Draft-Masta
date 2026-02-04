@@ -21,7 +21,6 @@ class FormatsCombobox(ttk.Combobox):
         self.formats_box = ttk.Combobox(parent, state="readonly", width=22, values=game_formats)
         self.formats_box.bind("<<ComboboxSelected>>", self.get_selected_key)
         self.formats_box.set("Select game format")
-        # self.formats_box.pack(side=tk.TOP, anchor="e", padx=140, pady=20)
         self.formats_box.grid(row=0, column=1, sticky="ne", padx=50, pady=85)
     
     def get_selected_key(self, event=None) -> str:
@@ -36,16 +35,18 @@ class AoEApplication(tk.Tk):
         super().__init__()
         self.title("TEST")
         self.geometry("1340x650")
-        # self.resizable(False, False)
+        self.resizable(False, False)
         self.tabControl = ttk.Notebook(self)
-        self.tabControl.pack(expand=True, fill='both')
         self.tab1 = ttk.Frame(self.tabControl)
         self.tab2 = ttk.Frame(self.tabControl)
         self.tab3 = ttk.Frame(self.tabControl)
         self.tab4 = ttk.Frame(self.tabControl)
 
-        
+        # page 1
+        self.page_1_top_frame = ttk.Frame(self.tab1, height=100)
+        self.page_1_bottom_frame = ttk.Frame(self.tab1, height=550)
         self.page_1()
+        
         self.pages_desc()
         self.page_2()
         self.initialize_pages()
@@ -60,17 +61,23 @@ class AoEApplication(tk.Tk):
 
 
     def page_1(self) -> None:
-        # self.top_frame = tk.Frame(self.tab1, width=0, height=0, bg='lightblue')
-        # self.top_frame.grid(row=0, column=0, padx=0, pady=0)
-        # self.tabControl.add(self.bottom_frame, text="Page 3")
-        button_set_name = ttk.Button(self.tab1, text="Set name", command=self.set_show_name).grid(row=0, column=1, sticky="ne", padx=130, pady=25)
-        button_save = ttk.Button(self.tab1, text="Save", command=self.set_show_name).grid(row=0, column=1, sticky="ne", padx=240, pady=85)
-        button2 = ttk.Button(self.tab1, text="Load map file", command=self.load_maps_file).grid(row=0, column=0, sticky="nw", padx=50, pady=100)
-        game_format = FormatsCombobox(self.tab1)
-        # self.bottom_frame = tk.Frame(self.tab1, width=10, height=10, bg='green')
-        # self.bottom_frame.grid(row=1, column=0, padx=0, pady=0)
-        # button_bottom_frame = ttk.Button(self.bottom_frame, text="Set name bottom frame", command=None).grid(row=0, column=0, sticky="w", padx=1040, pady=220)
+        button_load_map_file = ttk.Button(self.page_1_top_frame, text="Load map file", command=self.load_maps_file).grid(row=0, column=0, sticky="nw", padx=50, pady=100)
+        game_format = FormatsCombobox(self.page_1_top_frame)
+        button_set_name = ttk.Button(self.page_1_top_frame, text="Set name", command=self.set_show_name).grid(row=0, column=1, sticky="ne", padx=130, pady=25)
+        button_save = ttk.Button(self.page_1_top_frame, text="Save", command=self.set_show_name, ).grid(row=0, column=1, sticky="ne", padx=240, pady=85)
+        button_save = ttk.Button(self.page_1_bottom_frame, text="Save", command=self.set_show_name, ).grid(row=0, column=1, sticky="ns", padx=240, pady=0)
+        button_save = ttk.Button(self.page_1_bottom_frame, text="Save", command=self.set_show_name, ).grid(row=1, column=1, sticky="ns", padx=240, pady=0)
 
+        self.page_1_top_frame.columnconfigure(0, weight=1)
+        self.page_1_top_frame.columnconfigure(1, weight=1)
+        self.page_1_top_frame.rowconfigure(0, weight=1)
+        self.page_1_top_frame.rowconfigure(1, weight=1)
+        self.page_1_bottom_frame.columnconfigure(0, weight=1)
+        self.page_1_bottom_frame.columnconfigure(1, weight=1)
+        self.page_1_bottom_frame.rowconfigure(0, weight=1)
+        self.page_1_bottom_frame.rowconfigure(1, weight=1)
+        self.page_1_top_frame.pack(expand=False, fill='both', side="top")
+        self.page_1_bottom_frame.pack(expand=True, fill='both', side="bottom")
         
     
     def page_2(self) -> None:
@@ -78,22 +85,12 @@ class AoEApplication(tk.Tk):
         # return label_map_pool2
     
     def pages_desc(self) -> None:
-        label_map_pool = ttk.Label(self.tab1, text="Map pool", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
+        label_map_pool = ttk.Label(self.page_1_top_frame, text="Map pool", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
         label_best_civs = ttk.Label(self.tab2, text="Best civs per map", font=("Times New Roman", 22)).pack(side=tk.TOP, anchor="w", padx=50, pady=25)
         label_civs_draft = ttk.Label(self.tab3, text="Civs draft", font=("Times New Roman", 22)).pack(side=tk.TOP, anchor="w", padx=50, pady=25)
         label_game_draft = ttk.Label(self.tab4, text="Game draft", font=("Times New Roman", 22)).pack(side=tk.TOP, anchor="w", padx=50, pady=25)
 
 
-
-        # self.columnconfigure(0, weight=1)
-        # self.columnconfigure(1, weight=3)
-        # self.rowconfigure(0, weight=1)
-
-        # frame = InputForm(self)
-        # frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
-        # frame2 = InputForm(self)
-        # frame2.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
-    
 
 
 
@@ -104,47 +101,46 @@ class AoEApplication(tk.Tk):
         tab.grid_slaves()[5].destroy()
 
     def initialize_pages(self) -> None:
-        self.tab1.pack(expand=True, fill='both')
-        self.tab1.columnconfigure(0, weight=1)
-        self.tab1.columnconfigure(1, weight=1)
-        self.tab1.rowconfigure(0, weight=1)
-        self.tab1.rowconfigure(1, weight=1)
-        # self.tab1.columnconfigure(2, weight=1)
-        # self.tab1.columnconfigure(3, weight=1)
-        # self.tab1.rowconfigure(2, weight=1)
-        # self.tab1.rowconfigure(3, weight=1)
+        # self.tab1.pack(expand=True, fill='both')
+        # self.tab1.columnconfigure(0, weight=1)
+        # self.tab1.columnconfigure(1, weight=1)
+        # self.tab1.rowconfigure(0, weight=1)
+        # self.tab1.rowconfigure(1, weight=4)
         self.tabControl.add(self.tab1, text="Page 1")
         self.tabControl.add(self.tab2, text="Page 2")
         self.tabControl.add(self.tab3, text="Page 3")
         self.tabControl.add(self.tab4, text="Page 4")
+        self.tabControl.pack(expand=True, fill='both')
+
         # self.tabControl.grid(row=0, column=0)
 
     def set_show_name(self) -> None:
         name = askstring("Input", "Enter your name")
 
         if len(name) > 0: 
-                label = ttk.Label(self.tab1, text=f"Player: {name}",font=("Times New Roman", 22))
+                label = ttk.Label(self.page_1_top_frame, text=f"Player: {name}",font=("Times New Roman", 22))
                 label.grid(row=0, column=1, padx=50, pady=25, sticky="ne")
-                self.recreate_page(self.tab1)
+                self.recreate_page(self.page_1_top_frame)
 
     def load_maps_file(self) -> None:
         filename = askopenfile()
         
         try:
             read_file = filename.read()
-            print(json.loads(read_file))
+            # print(json.loads(read_file))
             file_content = json.loads(read_file)
-            # print(read_file)
             self.maps_json = file_content
-            # self.maps_json = read_file
-            # print(self.maps_json['maps'])
             self.maps_json_path = self.maps_json_path.join(os.getcwd() + "\\Maps\\" + file_content['name'] + "\\")
-            self.verify_maps_exist()
+            maps_exist = self.verify_maps_exist()
         except ValueError as e:
             print("Invalid json!!")
             return None # or: raise
+        
+        if maps_exist:
+            self.generate_maps_page_1()
+
     
-    def verify_maps_exist(self) -> None:
+    def verify_maps_exist(self) -> bool:
         missing_map_images: list[str] = []
 
         for map in self.maps_json['maps']:
@@ -152,9 +148,22 @@ class AoEApplication(tk.Tk):
             map_image_jpg = self.maps_json_path + map['name'] + ".jpg"
             if not ((os.path.isfile(map_image_png)) or (os.path.isfile(map_image_jpg))):
                 missing_map_images.append(map['name'])
-        if len(missing_map_images) > 0:
-            print("missing map images: ", missing_map_images)
 
+        if len(missing_map_images) == 0:
+            return True
+        else:
+            print("missing map images: ", missing_map_images)
+            return False
+    
+    def generate_maps_page_1(self):
+        i = 0
+        if len(self.maps_json['maps']) > 16:
+            print(f"Map count exceeds supported 16 maps generation. Maps in file: {len(self.maps_json['maps'])}")
+            return
+        for map in self.maps_json['maps']:
+            print(map['name'])
+            button = ttk.Checkbutton(self.top_frame, text=f"{map['name']}").grid(row=1, column=0, padx=40*i, pady=10, sticky="nw")
+            i+= 1
 
 
         # print(name)
