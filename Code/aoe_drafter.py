@@ -35,7 +35,7 @@ class AoEApplication(tk.Tk):
         super().__init__()
         self.title("TEST")
         self.geometry("1340x650")
-        self.resizable(False, False)
+        # self.resizable(False, False)
         self.tabControl = ttk.Notebook(self)
         self.tab1 = ttk.Frame(self.tabControl)
         self.tab2 = ttk.Frame(self.tabControl)
@@ -105,7 +105,8 @@ class AoEApplication(tk.Tk):
         """ needs testing """
         # for item in tab.grid_slaves():
         #     print(item)
-        tab.grid_slaves()[5].destroy()
+        print(tab.grid_slaves())
+        tab.grid_slaves()[3].destroy()
 
     def initialize_pages(self) -> None:
         # self.tab1.pack(expand=True, fill='both')
@@ -171,17 +172,22 @@ class AoEApplication(tk.Tk):
     
     def generate_maps_page_1(self):
         i = 0
+        # photo = tk.PhotoImage(file=os.getcwd()+"\\Code\\"+"page1.png")
         print(self.existing_maps)
         if len(self.maps_json['maps']) > 16:
             print(f"Map count exceeds supported 16 maps generation. Maps in file: {len(self.maps_json['maps'])}")
             return
         else:
             for map in self.maps_json['maps']:
+                print(self.existing_maps[i])
+                
                 if i == 0:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    # button.config(font=("Times New Roman", 10), bg='lightblue')
                     button.grid(row=0, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 1:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    # button.config(font=("Times New Roman", 14), image=photo, compound='right')
                     button.grid(row=1, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 2:
                     button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
