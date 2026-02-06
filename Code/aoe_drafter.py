@@ -3,6 +3,7 @@ import os
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from PIL import Image, ImageTk
 from tkinter.simpledialog import askstring
 from tkinter.filedialog import askopenfile
 
@@ -21,7 +22,7 @@ class FormatsCombobox(ttk.Combobox):
         self.formats_box = ttk.Combobox(parent, state="readonly", width=22, values=game_formats)
         self.formats_box.bind("<<ComboboxSelected>>", self.get_selected_key)
         self.formats_box.set("Select game format")
-        self.formats_box.grid(row=0, column=1, sticky="ne", padx=50, pady=85)
+        self.formats_box.grid(row=1, column=1, sticky="e", padx=50, pady=0)
     
     def get_selected_key(self, event=None) -> str:
         self.key = self.formats_box.get()
@@ -41,31 +42,33 @@ class AoEApplication(tk.Tk):
         self.tab2 = ttk.Frame(self.tabControl)
         self.tab3 = ttk.Frame(self.tabControl)
         self.tab4 = ttk.Frame(self.tabControl)
-
+        # self.photo = Image.open("D:/MelvinVSCode/AoE Draft Masta/Code/Przechwytywanie.png").resize((250, 250))
+        # self.photo = ImageTk.PhotoImage(self.photo)
         # page 1
-        self.page_1_top_frame = ttk.Frame(self.tab1, height=100)
-        self.page_1_bottom_frame = ttk.Frame(self.tab1, height=550)
+        self.page_1_top_frame = ttk.Frame(self.tab1)
+        self.page_1_bottom_frame = ttk.Frame(self.tab1)
         self.page_1()
+        # page 2
+        self.page_2_frame = ttk.Frame(self.tab2)
         
-        self.pages_desc()
         self.page_2()
+        # initialize pages with descriptions
+        self.pages_desc()
         self.initialize_pages()
-
         self.maps_json: str = ""
         self.maps_json_path: str = ""
         self.existing_maps: list[str] = []
         self.game_format: str = ""
-
+        self.mainloop()
         # print(self.page_32)
         # frame.grid(row=0, column=0, padx=1000, pady=15)
 
 
-
     def page_1(self) -> None:
-        button_load_map_file = ttk.Button(self.page_1_top_frame, text="Load map file", command=self.load_maps_file).grid(row=0, column=0, sticky="nw", padx=50, pady=100)
+        button_load_map_file = ttk.Button(self.page_1_top_frame, text="Load map file", command=self.load_maps_file).grid(row=0, column=0, sticky="w", padx=50, pady=0)
         game_format = FormatsCombobox(self.page_1_top_frame)
-        button_set_name = ttk.Button(self.page_1_top_frame, text="Set name", command=self.set_show_name).grid(row=0, column=1, sticky="ne", padx=130, pady=25)
-        button_save = ttk.Button(self.page_1_top_frame, text="Save", command=self.set_show_name, ).grid(row=0, column=1, sticky="ne", padx=240, pady=85)
+        button_set_name = ttk.Button(self.page_1_top_frame, text="Set name", command=self.set_show_name).grid(row=0, column=1, sticky="e", padx=130, pady=0)
+        button_save = ttk.Button(self.page_1_top_frame, text="Save", command=self.set_show_name, ).grid(row=1, column=1, sticky="ne", padx=240, pady=0)
         # button_save = ttk.Button(self.page_1_bottom_frame, text="Save", command=self.set_show_name, ).grid(row=0, column=1, sticky="ns", padx=240, pady=0)
         # button_save = ttk.Button(self.page_1_bottom_frame, text="Save", command=self.set_show_name, ).grid(row=1, column=1, sticky="ns", padx=240, pady=0)
 
@@ -88,14 +91,23 @@ class AoEApplication(tk.Tk):
         
     
     def page_2(self) -> None:
-        pass
-        # return label_map_pool2
+        # photo = Image.open("D:/MelvinVSCode/AoE Draft Masta/Code/Przechwytywanie.png").resize((250, 250))
+        # self.photo = ImageTk.PhotoImage(photo)
+        # mylabel = tk.Label(self.page_2_frame, image=self.photo, background='black')
+        # mylabel.grid(row=1, column=1)
+        # checkbutton = tk.Checkbutton(self.page_2_main_frame, text="hahaha", image=photo)
+        # checkbutton.grid(row=0, column=0, sticky="")
+        self.page_2_frame.columnconfigure(0, weight=1)
+        self.page_2_frame.columnconfigure(1, weight=1)
+        self.page_2_frame.rowconfigure(0, weight=1)
+        self.page_2_frame.rowconfigure(1, weight=1)
+        self.page_2_frame.pack(expand=True, fill='both', side="bottom")
     
     def pages_desc(self) -> None:
         label_map_pool = ttk.Label(self.page_1_top_frame, text="Map pool", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
-        label_best_civs = ttk.Label(self.tab2, text="Best civs per map", font=("Times New Roman", 22)).pack(side=tk.TOP, anchor="w", padx=50, pady=25)
-        label_civs_draft = ttk.Label(self.tab3, text="Civs draft", font=("Times New Roman", 22)).pack(side=tk.TOP, anchor="w", padx=50, pady=25)
-        label_game_draft = ttk.Label(self.tab4, text="Game draft", font=("Times New Roman", 22)).pack(side=tk.TOP, anchor="w", padx=50, pady=25)
+        label_best_civs = ttk.Label(self.page_2_frame, text="Best civs per map", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
+        label_civs_draft = ttk.Label(self.tab3, text="Civs draft", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
+        label_game_draft = ttk.Label(self.tab4, text="Game draft", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
 
 
 
@@ -119,7 +131,7 @@ class AoEApplication(tk.Tk):
         self.tabControl.add(self.tab3, text="Page 3")
         self.tabControl.add(self.tab4, text="Page 4")
         self.tabControl.pack(expand=True, fill='both')
-
+    
         # self.tabControl.grid(row=0, column=0)
 
     def set_show_name(self) -> None:
@@ -170,67 +182,90 @@ class AoEApplication(tk.Tk):
             print("missing map images: ", missing_map_images)
             return False
     
+    def display(self, x):
+        if(x.get()==1):
+            print("On")
+        else:
+            print("Off")
+            
     def generate_maps_page_1(self):
-        i = 0
-        # photo = tk.PhotoImage(file=os.getcwd()+"\\Code\\"+"page1.png")
-        print(self.existing_maps)
+        i = 1
+        x = tk.IntVar()
+        print(os.getcwd())
+        photo = Image.open(os.getcwd()+"\\Maps\\"+"Road to Wololo Londinium\\Socotra.png").resize((45, 45))
+        self.photo = ImageTk.PhotoImage(photo)
+        # print(self.existing_maps)
         if len(self.maps_json['maps']) > 16:
             print(f"Map count exceeds supported 16 maps generation. Maps in file: {len(self.maps_json['maps'])}")
             return
         else:
             for map in self.maps_json['maps']:
-                print(self.existing_maps[i])
+                # print(self.existing_maps[i])
                 
-                if i == 0:
-                    button = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    # button.config(font=("Times New Roman", 10), bg='lightblue')
-                    button.grid(row=0, column=0, padx=50, pady=0, sticky="nw")
-                elif i == 1:
-                    button = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    # button.config(font=("Times New Roman", 14), image=photo, compound='right')
-                    button.grid(row=1, column=0, padx=50, pady=0, sticky="nw")
+                if i == 1:
+                    button_1 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}", variable=x, onvalue=1, offvalue=0, command=lambda:self.display(x))
+                    button_1.config(font=("Arial", 12), image=self.photo, compound='right')
+                    button_1.grid(row=0, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 2:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=2, column=0, padx=50, pady=0, sticky="nw")
+                    button_2 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_2.config(font=("Arial", 12), image=self.photo, compound='right')
+                    button_2.grid(row=1, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 3:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=3, column=0, padx=50, pady=0, sticky="nw")
+                    button_3 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_3.config(font=("Arial", 12), image=self.photo, compound='right')
+                    button_3.grid(row=2, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 4:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=0, column=1, padx=50, pady=0, sticky="nw")
+                    button_4 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_4.config(font=("Arial", 12), image=self.photo, compound='right')
+                    button_4.grid(row=3, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 5:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=1, column=1, padx=50, pady=0, sticky="nw")
+                    button_5 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_5.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_5.grid(row=0, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 6:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=2, column=1, padx=50, pady=0, sticky="nw")
+                    button_6 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_6.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_6.grid(row=1, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 7:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=3, column=1, padx=50, pady=0, sticky="nw")
+                    button_7 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_7.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_7.grid(row=2, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 8:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=4, column=0, padx=50, pady=0, sticky="nw")
+                    button_8 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_8.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_8.grid(row=3, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 9:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=5, column=0, padx=50, pady=0, sticky="nw")
+                    button_9 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_9.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_9.grid(row=4, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 10:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=6, column=0, padx=50, pady=0, sticky="nw")
+                    button_10 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_10.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_10.grid(row=5, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 11:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=7, column=0, padx=50, pady=0, sticky="nw")
+                    button_11 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_11.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_11.grid(row=6, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 12:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=4, column=1, padx=50, pady=0, sticky="nw")
+                    button_12 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_12.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_12.grid(row=7, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 13:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=5, column=1, padx=50, pady=0, sticky="nw")
+                    button_13 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_13.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_13.grid(row=4, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 14:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=6, column=1, padx=50, pady=0, sticky="nw")
+                    button_14 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_14.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_14.grid(row=5, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 15:
-                    button = ttk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button.grid(row=7, column=1, padx=50, pady=0, sticky="nw")
+                    button_15 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_15.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_15.grid(row=6, column=1, padx=50, pady=0, sticky="nw")
+                elif i == 16:
+                    button_16 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
+                    button_16.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_16.grid(row=7, column=1, padx=50, pady=0, sticky="nw")
                 i+=1
         # for map in self.maps_json['maps']:
         #     print(map['name'])
