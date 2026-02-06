@@ -65,7 +65,7 @@ class AoEApplication(tk.Tk):
 
 
     def page_1(self) -> None:
-        button_load_map_file = ttk.Button(self.page_1_top_frame, text="Load map file", command=self.load_maps_file).grid(row=0, column=0, sticky="w", padx=50, pady=0)
+        button_load_map_file = ttk.Button(self.page_1_top_frame, text="Load map file", command=self.load_maps_file).grid(row=1, column=0, sticky="w", padx=50, pady=0)
         game_format = FormatsCombobox(self.page_1_top_frame)
         button_set_name = ttk.Button(self.page_1_top_frame, text="Set name", command=self.set_show_name).grid(row=0, column=1, sticky="e", padx=130, pady=0)
         button_save = ttk.Button(self.page_1_top_frame, text="Save", command=self.set_show_name, ).grid(row=1, column=1, sticky="ne", padx=240, pady=0)
