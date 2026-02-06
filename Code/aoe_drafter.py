@@ -22,7 +22,7 @@ class FormatsCombobox(ttk.Combobox):
         self.formats_box = ttk.Combobox(parent, state="readonly", width=22, values=game_formats)
         self.formats_box.bind("<<ComboboxSelected>>", self.get_selected_key)
         self.formats_box.set("Select game format")
-        self.formats_box.grid(row=1, column=1, sticky="e", padx=50, pady=0)
+        self.formats_box.grid(row=1, column=1, sticky="e", padx=50, pady=20)
     
     def get_selected_key(self, event=None) -> str:
         self.key = self.formats_box.get()
@@ -65,10 +65,10 @@ class AoEApplication(tk.Tk):
 
 
     def page_1(self) -> None:
-        button_load_map_file = ttk.Button(self.page_1_top_frame, text="Load map file", command=self.load_maps_file).grid(row=1, column=0, sticky="w", padx=50, pady=0)
+        button_load_map_file = ttk.Button(self.page_1_top_frame, text="Load map file", command=self.load_maps_file).grid(row=1, column=0, sticky="w", padx=50, pady=20)
         game_format = FormatsCombobox(self.page_1_top_frame)
         button_set_name = ttk.Button(self.page_1_top_frame, text="Set name", command=self.set_show_name).grid(row=0, column=1, sticky="e", padx=130, pady=0)
-        button_save = ttk.Button(self.page_1_top_frame, text="Save", command=self.set_show_name, ).grid(row=1, column=1, sticky="ne", padx=240, pady=0)
+        button_save = ttk.Button(self.page_1_top_frame, text="Save", command=self.set_show_name, ).grid(row=1, column=1, sticky="ne", padx=240, pady=20)
         # button_save = ttk.Button(self.page_1_bottom_frame, text="Save", command=self.set_show_name, ).grid(row=0, column=1, sticky="ns", padx=240, pady=0)
         # button_save = ttk.Button(self.page_1_bottom_frame, text="Save", command=self.set_show_name, ).grid(row=1, column=1, sticky="ns", padx=240, pady=0)
 
@@ -192,79 +192,97 @@ class AoEApplication(tk.Tk):
         i = 1
         x = tk.IntVar()
         print(os.getcwd())
-        photo = Image.open(os.getcwd()+"\\Maps\\"+"Road to Wololo Londinium\\Socotra.png").resize((45, 45))
-        self.photo = ImageTk.PhotoImage(photo)
+
         # print(self.existing_maps)
         if len(self.maps_json['maps']) > 16:
             print(f"Map count exceeds supported 16 maps generation. Maps in file: {len(self.maps_json['maps'])}")
             return
         else:
             for map in self.maps_json['maps']:
+                # print("map", map)
                 # print(self.existing_maps[i])
-                
+                # photo = Image.open(self.existing_maps[i-1]).resize((45, 45))
+                # self.photo = ImageTk.PhotoImage(photo)
+                photo = Image.open(self.existing_maps[i-1]).resize((55, 55))
                 if i == 1:
+                    self.photo_1 = ImageTk.PhotoImage(photo)
                     button_1 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}", variable=x, onvalue=1, offvalue=0, command=lambda:self.display(x))
-                    button_1.config(font=("Arial", 12), image=self.photo, compound='right')
+                    button_1.config(font=("Arial", 12), image=self.photo_1, compound='right')
                     button_1.grid(row=0, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 2:
+                    self.photo_2 = ImageTk.PhotoImage(photo)
                     button_2 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_2.config(font=("Arial", 12), image=self.photo, compound='right')
+                    button_2.config(font=("Arial", 12), image=self.photo_2, compound='right')
                     button_2.grid(row=1, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 3:
+                    self.photo_3 = ImageTk.PhotoImage(photo)
                     button_3 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_3.config(font=("Arial", 12), image=self.photo, compound='right')
+                    button_3.config(font=("Arial", 12), image=self.photo_3, compound='right')
                     button_3.grid(row=2, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 4:
+                    self.photo_4 = ImageTk.PhotoImage(photo)
                     button_4 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_4.config(font=("Arial", 12), image=self.photo, compound='right')
+                    button_4.config(font=("Arial", 12), image=self.photo_4, compound='right')
                     button_4.grid(row=3, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 5:
+                    self.photo_5 = ImageTk.PhotoImage(photo)
                     button_5 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_5.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_5.config(font=("Arial", 12), image=self.photo_5, compound='left')
                     button_5.grid(row=0, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 6:
+                    self.photo_6 = ImageTk.PhotoImage(photo)
                     button_6 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_6.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_6.config(font=("Arial", 12), image=self.photo_6, compound='left')
                     button_6.grid(row=1, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 7:
+                    self.photo_7 = ImageTk.PhotoImage(photo)
                     button_7 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_7.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_7.config(font=("Arial", 12), image=self.photo_7, compound='left')
                     button_7.grid(row=2, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 8:
+                    self.photo_8 = ImageTk.PhotoImage(photo)
                     button_8 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_8.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_8.config(font=("Arial", 12), image=self.photo_8, compound='left')
                     button_8.grid(row=3, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 9:
+                    self.photo_9 = ImageTk.PhotoImage(photo)
                     button_9 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_9.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_9.config(font=("Arial", 12), image=self.photo_9, compound='left')
                     button_9.grid(row=4, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 10:
+                    self.photo_10 = ImageTk.PhotoImage(photo)
                     button_10 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_10.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_10.config(font=("Arial", 12), image=self.photo_10, compound='left')
                     button_10.grid(row=5, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 11:
+                    self.photo_11 = ImageTk.PhotoImage(photo)
                     button_11 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_11.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_11.config(font=("Arial", 12), image=self.photo_11, compound='left')
                     button_11.grid(row=6, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 12:
+                    self.photo_12 = ImageTk.PhotoImage(photo)
                     button_12 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_12.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_12.config(font=("Arial", 12), image=self.photo_12, compound='left')
                     button_12.grid(row=7, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 13:
+                    self.photo_13 = ImageTk.PhotoImage(photo)
                     button_13 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_13.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_13.config(font=("Arial", 12), image=self.photo_13, compound='left')
                     button_13.grid(row=4, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 14:
+                    self.photo_14 = ImageTk.PhotoImage(photo)
                     button_14 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_14.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_14.config(font=("Arial", 12), image=self.photo_14, compound='left')
                     button_14.grid(row=5, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 15:
+                    self.photo_15 = ImageTk.PhotoImage(photo)
                     button_15 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_15.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_15.config(font=("Arial", 12), image=self.photo_15, compound='left')
                     button_15.grid(row=6, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 16:
+                    self.photo_16 = ImageTk.PhotoImage(photo)
                     button_16 = tk.Checkbutton(self.page_1_bottom_frame, text=f"{map['name']}")
-                    button_16.config(font=("Arial", 12), image=self.photo, compound='left')
+                    button_16.config(font=("Arial", 12), image=self.photo_16, compound='left')
                     button_16.grid(row=7, column=1, padx=50, pady=0, sticky="nw")
                 i+=1
         # for map in self.maps_json['maps']:
