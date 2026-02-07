@@ -114,12 +114,14 @@ class AoEApplication(tk.Tk):
 
 
 
-    def recreate_page(self, tab: ttk.Frame) -> None:
-        """ needs testing """
-        # for item in tab.grid_slaves():
-        #     print(item)
-        # print(tab.grid_slaves())
-        tab.grid_slaves()[3].destroy()
+    def recreate_page(self, tab: ttk.Frame, index: int = None, full_clear: bool = False) -> None:
+        if index is None and full_clear:
+            for item in range(len(tab.grid_slaves())):
+                tab.grid_slaves()[0].destroy()  # loop for the whole frame and delete every widget (index-0 times nr of slaves)
+            if tab == self.page_1_bottom_frame:
+                self.selected_maps = {}
+        elif index is not None and not full_clear:
+            tab.grid_slaves()[index].destroy()
 
     def initialize_pages(self) -> None:
         # self.tab1.pack(expand=True, fill='both')
@@ -143,7 +145,7 @@ class AoEApplication(tk.Tk):
                     name = name[:20]
                 label = ttk.Label(self.page_1_top_frame, text=f"Player: {name}",font=("Times New Roman", 22))
                 label.grid(row=0, column=1, padx=50, pady=25, sticky="ne")
-                self.recreate_page(self.page_1_top_frame)
+                self.recreate_page(self.page_1_top_frame, index=3)
 
     def load_maps_file(self) -> None:
         filename = askopenfile()
@@ -155,11 +157,13 @@ class AoEApplication(tk.Tk):
             self.maps_json = file_content  # file_content.name must be the same as folder Maps's name
             self.maps_json_path = self.maps_json_path.join(os.getcwd() + "\\Maps\\" + file_content['name'] + "\\")
             maps_exist = self.verify_maps_exist()
+            self.maps_json_path = ""
         except ValueError as e:
             print("Invalid json!!")
             return None # or: raise
-        
+
         if maps_exist:
+            self.recreate_page(self.page_1_bottom_frame, full_clear=True)
             self.generate_maps_page_1()
 
     
@@ -172,23 +176,21 @@ class AoEApplication(tk.Tk):
             map_image_jpg = self.maps_json_path + map['name'] + ".jpg"
             if not ((os.path.isfile(map_image_png)) or (os.path.isfile(map_image_jpg))):
                 missing_map_images.append(map['name'])
+                print(map_image_jpg, map_image_png)
             else:
                 if map_image_png:
                     existing_maps[map['name']] = map_image_png
                 elif map_image_jpg:
                     existing_maps[map['name']] = map_image_png
-        
         if len(missing_map_images) == 0:
             self.existing_maps_paths = existing_maps
-            # for k, v in self.existing_maps_paths.items():
-                # print(k, v)
             return True
         else:
             print("missing map images: ", missing_map_images)
             return False
     
     def clicked(self, x, map_name, map_path):
-        selected_maps = self.selected_maps #updating selected_maps updates self.selected_maps as well
+        selected_maps = self.selected_maps  #updating selected_maps updates self.selected_maps as well
         if(x.get()==1):
             if map_name not in selected_maps:
                 selected_maps[map_name] = map_path
@@ -208,7 +210,7 @@ class AoEApplication(tk.Tk):
             for map in self.maps_json['maps']:
                 map_name = map['name']
                 map_path = self.existing_maps_paths[map_name]
-                print("name: ", map_name, "path: ", map_path)
+                # print("name: ", map_name, "path: ", map_path)
                 photo = Image.open(map_path).resize((55, 55))
                 if i == 1:
                     x_1 = tk.IntVar()
