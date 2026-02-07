@@ -2,7 +2,7 @@ from tkinter import *
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk
-def display():
+def display(x):
     if(x.get()==1):
         print("Zgadzasz się!")
     else:

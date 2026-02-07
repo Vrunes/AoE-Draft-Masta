@@ -57,8 +57,9 @@ class AoEApplication(tk.Tk):
         self.initialize_pages()
         self.maps_json: str = ""
         self.maps_json_path: str = ""
-        self.existing_maps: list[str] = []
+        self.existing_maps_paths: dict[str] = {}
         self.game_format: str = ""
+        self.selected_maps: dict[str] = {}
         self.mainloop()
         # print(self.page_32)
         # frame.grid(row=0, column=0, padx=1000, pady=15)
@@ -151,7 +152,7 @@ class AoEApplication(tk.Tk):
             read_file = filename.read()
             # print(json.loads(read_file))
             file_content = json.loads(read_file)
-            self.maps_json = file_content
+            self.maps_json = file_content  # file_content.name must be the same as folder Maps's name
             self.maps_json_path = self.maps_json_path.join(os.getcwd() + "\\Maps\\" + file_content['name'] + "\\")
             maps_exist = self.verify_maps_exist()
         except ValueError as e:
@@ -164,7 +165,7 @@ class AoEApplication(tk.Tk):
     
     def verify_maps_exist(self) -> bool:
         missing_map_images: list[str] = []
-        existing_maps: list[str] = []
+        existing_maps: dict[str] = {}
 
         for map in self.maps_json['maps']:
             map_image_png = self.maps_json_path + map['name'] + ".png"
@@ -173,117 +174,168 @@ class AoEApplication(tk.Tk):
                 missing_map_images.append(map['name'])
             else:
                 if map_image_png:
-                    existing_maps.append(map_image_png)
+                    existing_maps[map['name']] = map_image_png
                 elif map_image_jpg:
-                    existing_maps.append(map_image_jpg)
-        self.existing_maps = existing_maps
-
+                    existing_maps[map['name']] = map_image_png
+        
         if len(missing_map_images) == 0:
+            self.existing_maps_paths = existing_maps
+            # for k, v in self.existing_maps_paths.items():
+                # print(k, v)
             return True
         else:
             print("missing map images: ", missing_map_images)
             return False
     
-    def display(self, x, y):
+    def clicked(self, x, map_name, map_path):
+        selected_maps = self.selected_maps #updating selected_maps updates self.selected_maps as well
         if(x.get()==1):
-            print("On ", y)
+            if map_name not in selected_maps:
+                selected_maps[map_name] = map_path
+                print("On ")
         else:
+            del selected_maps[map_name]
             print("Off")
+        print(self.selected_maps)
             
     def generate_maps_page_1(self):
-        
-        
-        # print(os.getcwd())
 
-        # print(self.existing_maps)
         if len(self.maps_json['maps']) > 16:
             print(f"Map count exceeds supported 16 maps generation. Maps in file: {len(self.maps_json['maps'])}")
             return
         else:
             i = 1
-            x = tk.IntVar()
             for map in self.maps_json['maps']:
-                # print("map", map)
-                # print(self.existing_maps[i])
-                photo = Image.open(self.existing_maps[i-1]).resize((55, 55))
+                map_name = map['name']
+                map_path = self.existing_maps_paths[map_name]
+                print("name: ", map_name, "path: ", map_path)
+                photo = Image.open(map_path).resize((55, 55))
                 if i == 1:
+                    x_1 = tk.IntVar()
+                    map_name_1 = map_name
+                    map_path_1 = map_path
                     self.photo_1 = ImageTk.PhotoImage(photo)
-                    button_1 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}", variable=x, onvalue=1, offvalue=0, command=lambda:self.display(x, "test"))
+                    button_1 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_1}", variable=x_1, onvalue=1, offvalue=0, command=lambda:self.clicked(x_1, map_name_1, map_path_1))
                     button_1.config(font=("Arial", 12), image=self.photo_1, compound='left')
                     button_1.grid(row=0, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 2:
+                    x_2 = tk.IntVar()
+                    map_name_2 = map_name
+                    map_path_2 = map_path
                     self.photo_2 = ImageTk.PhotoImage(photo)
-                    button_2 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_2 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_2}", variable=x_2, onvalue=1, offvalue=0, command=lambda:self.clicked(x_2, map_name_2, map_path_2))
                     button_2.config(font=("Arial", 12), image=self.photo_2, compound='left')
                     button_2.grid(row=1, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 3:
+                    x_3 = tk.IntVar()
+                    map_name_3 = map_name
+                    map_path_3 = map_path
                     self.photo_3 = ImageTk.PhotoImage(photo)
-                    button_3 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_3 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_3}", variable=x_3, onvalue=1, offvalue=0, command=lambda:self.clicked(x_3, map_name_3, map_path_3))
                     button_3.config(font=("Arial", 12), image=self.photo_3, compound='left')
                     button_3.grid(row=2, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 4:
+                    x_4 = tk.IntVar()
+                    map_name_4 = map_name
+                    map_path_4 = map_path
                     self.photo_4 = ImageTk.PhotoImage(photo)
-                    button_4 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_4 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_4}", variable=x_4, onvalue=1, offvalue=0, command=lambda:self.clicked(x_4, map_name_4, map_path_4))
                     button_4.config(font=("Arial", 12), image=self.photo_4, compound='left')
                     button_4.grid(row=3, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 5:
+                    x_5 = tk.IntVar()
+                    map_name_5 = map_name
+                    map_path_5 = map_path
                     self.photo_5 = ImageTk.PhotoImage(photo)
-                    button_5 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_5 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_5}", variable=x_5, onvalue=1, offvalue=0, command=lambda:self.clicked(x_5, map_name_5, map_path_5))
                     button_5.config(font=("Arial", 12), image=self.photo_5, compound='left')
                     button_5.grid(row=0, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 6:
+                    x_6 = tk.IntVar()
+                    map_name_6 = map_name
+                    map_path_6 = map_path
                     self.photo_6 = ImageTk.PhotoImage(photo)
-                    button_6 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_6 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_6}", variable=x_6, onvalue=1, offvalue=0, command=lambda:self.clicked(x_6, map_name_6, map_path_6))
                     button_6.config(font=("Arial", 12), image=self.photo_6, compound='left')
                     button_6.grid(row=1, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 7:
+                    x_7 = tk.IntVar()
+                    map_name_7 = map_name
+                    map_path_7 = map_path
                     self.photo_7 = ImageTk.PhotoImage(photo)
-                    button_7 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_7 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_7}", variable=x_7, onvalue=1, offvalue=0, command=lambda:self.clicked(x_7, map_name_7, map_path_7))
                     button_7.config(font=("Arial", 12), image=self.photo_7, compound='left')
                     button_7.grid(row=2, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 8:
+                    x_8 = tk.IntVar()
+                    map_name_8 = map_name
+                    map_path_8 = map_path
                     self.photo_8 = ImageTk.PhotoImage(photo)
-                    button_8 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_8 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_8}", variable=x_8, onvalue=1, offvalue=0, command=lambda:self.clicked(x_8, map_name_8, map_path_8))
                     button_8.config(font=("Arial", 12), image=self.photo_8, compound='left')
                     button_8.grid(row=3, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 9:
+                    x_9 = tk.IntVar()
+                    map_name_9 = map_name
+                    map_path_9 = map_path
                     self.photo_9 = ImageTk.PhotoImage(photo)
-                    button_9 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_9 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_9}", variable=x_9, onvalue=1, offvalue=0, command=lambda:self.clicked(x_9, map_name_9, map_path_9))
                     button_9.config(font=("Arial", 12), image=self.photo_9, compound='left')
                     button_9.grid(row=4, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 10:
+                    x_10 = tk.IntVar()
+                    map_name_10 = map_name
+                    map_path_10 = map_path
                     self.photo_10 = ImageTk.PhotoImage(photo)
-                    button_10 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_10 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_10}", variable=x_10, onvalue=1, offvalue=0, command=lambda:self.clicked(x_10, map_name_10, map_path_10))
                     button_10.config(font=("Arial", 12), image=self.photo_10, compound='left')
                     button_10.grid(row=5, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 11:
+                    x_11 = tk.IntVar()
+                    map_name_11 = map_name
+                    map_path_11 = map_path
                     self.photo_11 = ImageTk.PhotoImage(photo)
-                    button_11 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_11 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_11}", variable=x_11, onvalue=1, offvalue=0, command=lambda:self.clicked(x_11, map_name_11, map_path_11))
                     button_11.config(font=("Arial", 12), image=self.photo_11, compound='left')
                     button_11.grid(row=6, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 12:
+                    x_12 = tk.IntVar()
+                    map_name_12 = map_name
+                    map_path_12 = map_path
                     self.photo_12 = ImageTk.PhotoImage(photo)
-                    button_12 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_12 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_12}", variable=x_12, onvalue=1, offvalue=0, command=lambda:self.clicked(x_12, map_name_12, map_path_12))
                     button_12.config(font=("Arial", 12), image=self.photo_12, compound='left')
                     button_12.grid(row=7, column=0, padx=50, pady=0, sticky="nw")
                 elif i == 13:
+                    x_13 = tk.IntVar()
+                    map_name_13 = map_name
+                    map_path_13 = map_path
                     self.photo_13 = ImageTk.PhotoImage(photo)
-                    button_13 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_13 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_13}", variable=x_13, onvalue=1, offvalue=0, command=lambda:self.clicked(x_13, map_name_13, map_path_13))
                     button_13.config(font=("Arial", 12), image=self.photo_13, compound='left')
                     button_13.grid(row=4, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 14:
+                    x_14 = tk.IntVar()
+                    map_name_14 = map_name
+                    map_path_14 = map_path
                     self.photo_14 = ImageTk.PhotoImage(photo)
-                    button_14 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_14 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_14}", variable=x_14, onvalue=1, offvalue=0, command=lambda:self.clicked(x_14, map_name_14, map_path_14))
                     button_14.config(font=("Arial", 12), image=self.photo_14, compound='left')
                     button_14.grid(row=5, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 15:
+                    x_15 = tk.IntVar()
+                    map_name_15 = map_name
+                    map_path_15 = map_path
                     self.photo_15 = ImageTk.PhotoImage(photo)
-                    button_15 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_15 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_15}", variable=x_15, onvalue=1, offvalue=0, command=lambda:self.clicked(x_15, map_name_15, map_path_15))
                     button_15.config(font=("Arial", 12), image=self.photo_15, compound='left')
                     button_15.grid(row=6, column=1, padx=50, pady=0, sticky="nw")
                 elif i == 16:
+                    x_16 = tk.IntVar()
+                    map_name_16 = map_name
+                    map_path_16 = map_path
                     self.photo_16 = ImageTk.PhotoImage(photo)
-                    button_16 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map['name']}")
+                    button_16 = tk.Checkbutton(self.page_1_bottom_frame, text=f" {map_name_16}", variable=x_16, onvalue=1, offvalue=0, command=lambda:self.clicked(x_16, map_name_16, map_path_16))
                     button_16.config(font=("Arial", 12), image=self.photo_16, compound='left')
                     button_16.grid(row=7, column=1, padx=50, pady=0, sticky="nw")
                 i+=1
