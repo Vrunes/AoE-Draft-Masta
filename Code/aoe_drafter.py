@@ -61,14 +61,13 @@ class AoEApplication(tk.Tk):
         self.maps_json_path: str = ""
         self.existing_maps_paths: dict[str] = {}
         self.selected_maps: dict[str] = {}
-        # print(self.page_32)
-        # frame.grid(row=0, column=0, padx=1000, pady=15)
+        self.save_allowed: bool = False
 
 
     def page_1(self) -> None:
         button_load_map_file = ttk.Button(self.page_1_top_frame, text="Load map file", command=self.load_maps_file).grid(row=1, column=0, sticky="w", padx=50, pady=20) 
         button_set_name = ttk.Button(self.page_1_top_frame, text="Set name", command=self.set_show_name).grid(row=0, column=1, sticky="e", padx=130, pady=0)
-        button_save = ttk.Button(self.page_1_top_frame, text="Save", command=self.verify_save_allowed).grid(row=1, column=1, sticky="ne", padx=240, pady=20)        
+        button_save = ttk.Button(self.page_1_top_frame, text="Save", command=self.save_page_1).grid(row=1, column=1, sticky="ne", padx=240, pady=20)        
 
         self.page_1_top_frame.columnconfigure(0, weight=1)
         self.page_1_top_frame.columnconfigure(1, weight=1)
@@ -94,10 +93,9 @@ class AoEApplication(tk.Tk):
         self.page_2_frame.rowconfigure(1, weight=1)
         self.page_2_frame.pack(expand=True, fill='both', side="bottom")
         
-    def verify_save_allowed(self) -> None:
-        pass
-        # if 
-        # label.config(bg='green')
+    def save_page_1(self) -> None:
+        if self.save_allowed:
+            pass
 
     def pages_desc(self) -> None:
         label_map_pool = ttk.Label(self.page_1_top_frame, text="Map pool", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
@@ -174,25 +172,24 @@ class AoEApplication(tk.Tk):
             print("missing map images: ", missing_map_images)
             return False
 
-
     def clicked(self, x: int, map_name: str, map_path: str) -> None:
         selected_maps = self.selected_maps  #updating selected_maps updates self.selected_maps as well
         if(x.get()==1):
-            # print("key: ", self.game_format.key)
             if map_name not in selected_maps:
                 selected_maps[map_name] = map_path
                 print("On ")
         else:
             del selected_maps[map_name]
             print("Off")
-        # print(self.selected_maps)
         self.update_save_allowed_indicator()
     
-    def update_save_allowed_indicator(self):
+    def update_save_allowed_indicator(self) -> None:
         if len(self.selected_maps) == int(self.game_format.key):
             self.save_indicator.config(bg='green')
+            self.save_allowed = True
         else:
             self.save_indicator.config(bg='red')
+            self.save_allowed = False
 
     def generate_maps_page_1(self):
 
