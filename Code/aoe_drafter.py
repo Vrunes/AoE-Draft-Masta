@@ -16,7 +16,7 @@ def main() -> None:
 class FormatsCombobox(ttk.Combobox):
     def __init__(self, parent):
         self.parent = parent
-        self.key: str = int
+        self.key = ""
         self.game_formats: dict[str, str] = {"Bo1": 1, "Bo3": 3, "Bo5": 5, 
                                         "Bo7": 7, "Bo9": 9, "Custom - not implemented": -1}
         # ToDo: add "Custom" game format
@@ -25,8 +25,8 @@ class FormatsCombobox(ttk.Combobox):
         self.formats_box.set("Select game format")
         self.formats_box.grid(row=1, column=1, sticky="e", padx=50, pady=20)
     
-    def get_selected_key(self, event=None) -> str:
-        self.key = self.game_formats[self.formats_box.get()]
+    def get_selected_key(self, event=None) -> int:
+        self.key = self.game_formats[self.formats_box.get()]  # changing to int, default val is string and must be for other method
         print(self.key)
         return self.key
         # messagebox.showinfo("window name", f"Format selected: {self.key}") # to remove/change
@@ -51,7 +51,11 @@ class AoEApplication(tk.Tk):
         self.save_indicator.grid(row=1, column=1, sticky="ne", padx=210, pady=22)
         self.page_1()
         # page 2
-        self.page_2_frame = ttk.Frame(self.tab2)
+        self.page_2_top_frame = ttk.Frame(self.tab2)
+        self.page_2_bottom_frame = ttk.Frame(self.tab2)
+        self.bo_sign_page_2 = ttk.Label(self.page_2_top_frame, text="", font=("Times New Roman", 22))
+        self.bo_sign_page_2.grid(row=0, column=1, sticky="e", padx=130, pady=0)
+
         
         self.page_2()
         # initialize pages with descriptions
@@ -87,19 +91,24 @@ class AoEApplication(tk.Tk):
         self.page_1_bottom_frame.pack(expand=True, fill='both', side="bottom")
     
     def page_2(self) -> None:
-        self.page_2_frame.columnconfigure(0, weight=1)
-        self.page_2_frame.columnconfigure(1, weight=1)
-        self.page_2_frame.rowconfigure(0, weight=1)
-        self.page_2_frame.rowconfigure(1, weight=1)
-        self.page_2_frame.pack(expand=True, fill='both', side="bottom")
-        
-    def save_page_1(self) -> None:
-        if self.save_allowed:
-            pass
+        self.page_2_top_frame.columnconfigure(0, weight=1)
+        self.page_2_top_frame.columnconfigure(1, weight=1)
+        self.page_2_top_frame.rowconfigure(0, weight=1)
+        self.page_2_top_frame.rowconfigure(1, weight=1)
+        self.page_2_bottom_frame.columnconfigure(0, weight=1)
+        self.page_2_bottom_frame.columnconfigure(1, weight=1)
+        self.page_2_bottom_frame.rowconfigure(0, weight=1)
+        self.page_2_bottom_frame.rowconfigure(1, weight=1)
+        self.page_2_bottom_frame.rowconfigure(2, weight=1)
+        self.page_2_bottom_frame.rowconfigure(3, weight=1)
+        self.page_2_bottom_frame.rowconfigure(4, weight=1)
+        self.page_2_top_frame.pack(expand=False, fill='both', side="top")
+        self.page_2_bottom_frame.pack(expand=True, fill='both', side="bottom")
+
 
     def pages_desc(self) -> None:
         label_map_pool = ttk.Label(self.page_1_top_frame, text="Map pool", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
-        label_best_civs = ttk.Label(self.page_2_frame, text="Best civs per map", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
+        label_best_civs = ttk.Label(self.page_2_top_frame, text="Best civs per map", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
         label_civs_draft = ttk.Label(self.tab3, text="Civs draft", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
         label_game_draft = ttk.Label(self.tab4, text="Game draft", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
 
@@ -111,6 +120,7 @@ class AoEApplication(tk.Tk):
                 self.selected_maps = {}
         elif index is not None and not full_clear:
             tab.grid_slaves()[index].destroy()
+        print(f"cleared, widgets left: {len(tab.grid_slaves())}")
 
     def initialize_pages(self) -> None:
         self.tabControl.add(self.tab1, text="Page 1")
@@ -138,9 +148,8 @@ class AoEApplication(tk.Tk):
             # print(json.loads(read_file))
             file_content = json.loads(read_file)
             self.maps_json = file_content  # file_content.name must be the same as folder Maps's name
-            self.maps_json_path = self.maps_json_path.join(os.getcwd() + "\\Maps\\" + file_content['name'] + "\\")
+            self.maps_json_path = os.getcwd() + "\\Maps\\" + file_content['name'] + "\\"
             maps_exist = self.verify_maps_exist()
-            self.maps_json_path = ""
         except ValueError as e:
             print("Invalid json!!")
             return None # or: raise
@@ -177,10 +186,8 @@ class AoEApplication(tk.Tk):
         if(x.get()==1):
             if map_name not in selected_maps:
                 selected_maps[map_name] = map_path
-                print("On ")
         else:
             del selected_maps[map_name]
-            print("Off")
         self.update_save_allowed_indicator()
     
     def update_save_allowed_indicator(self) -> None:
@@ -190,6 +197,89 @@ class AoEApplication(tk.Tk):
         else:
             self.save_indicator.config(bg='red')
             self.save_allowed = False
+    
+    def update_bo_x_sign(self) -> None:
+        self.bo_sign_page_2.config(text=f"Best of {self.game_format.key}")
+        
+    def save_page_1(self) -> None:
+        if isinstance(self.game_format.key, int):
+            self.update_save_allowed_indicator()  # reverify -> in case someone got green light and changed game format (green light stays)
+        if self.save_allowed:
+            self.recreate_page(self.page_2_bottom_frame, full_clear=True)
+            self.update_bo_x_sign()
+            self.generate_maps_page_2()
+            
+    def generate_maps_page_2(self) -> None:
+        i = 1
+        print(self.selected_maps)
+        
+        for name, path in self.selected_maps.items():
+            print(name, path)
+            photo = Image.open(path).resize((85, 85))
+            if i == 1:
+                best_civs_1 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
+                best_civs_1 = sorted(set(([", ".join(civ) for civ in best_civs_1])))
+                self.photo_1_page_2 = ImageTk.PhotoImage(photo)
+                button_1_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_1[0]}", justify='left')
+                button_1_page_2.config(font=("Arial", 12), image=self.photo_1_page_2, compound='left')
+                button_1_page_2.grid(row=0, column=0, padx=50, pady=0, sticky="nw")
+            elif i == 2:
+                best_civs_2 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
+                best_civs_2 = sorted(set(([", ".join(civ) for civ in best_civs_2])))
+                self.photo_2_page_2 = ImageTk.PhotoImage(photo)
+                button_2_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_2[0]}", justify='left')
+                button_2_page_2.config(font=("Arial", 12), image=self.photo_2_page_2, compound='left')
+                button_2_page_2.grid(row=1, column=0, padx=50, pady=0, sticky="nw")
+            elif i == 3:
+                best_civs_3 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
+                best_civs_3 = sorted(set(([", ".join(civ) for civ in best_civs_3])))
+                self.photo_3_page_2 = ImageTk.PhotoImage(photo)
+                button_3_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_3[0]}", justify='left')
+                button_3_page_2.config(font=("Arial", 12), image=self.photo_3_page_2, compound='left')
+                button_3_page_2.grid(row=2, column=0, padx=50, pady=0, sticky="nw")
+            elif i == 4:
+                best_civs_4 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
+                best_civs_4 = sorted(set(([", ".join(civ) for civ in best_civs_4])))
+                self.photo_4_page_2 = ImageTk.PhotoImage(photo)
+                button_4_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_4[0]}", justify='left')
+                button_4_page_2.config(font=("Arial", 12), image=self.photo_4_page_2, compound='left')
+                button_4_page_2.grid(row=3, column=0, padx=50, pady=0, sticky="nw")
+            elif i == 5:
+                best_civs_5 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
+                best_civs_5 = sorted(set(([", ".join(civ) for civ in best_civs_5])))
+                self.photo_5_page_2 = ImageTk.PhotoImage(photo)
+                button_5_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_5[0]}", justify='left')
+                button_5_page_2.config(font=("Arial", 12), image=self.photo_5_page_2, compound='left')
+                button_5_page_2.grid(row=4, column=0, padx=50, pady=0, sticky="nw")
+            elif i == 6:
+                best_civs_6 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
+                best_civs_6 = sorted(set(([", ".join(civ) for civ in best_civs_6])))
+                self.photo_6_page_2 = ImageTk.PhotoImage(photo)
+                button_6_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_6[0]}", justify='left')
+                button_6_page_2.config(font=("Arial", 12), image=self.photo_6_page_2, compound='left')
+                button_6_page_2.grid(row=0, column=1, padx=50, pady=0, sticky="nw")
+            elif i == 7:
+                best_civs_7 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
+                best_civs_7 = sorted(set(([", ".join(civ) for civ in best_civs_7])))
+                self.photo_7_page_2 = ImageTk.PhotoImage(photo)
+                button_7_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_7[0]}", justify='left')
+                button_7_page_2.config(font=("Arial", 12), image=self.photo_7_page_2, compound='left')
+                button_7_page_2.grid(row=1, column=1, padx=50, pady=0, sticky="nw")
+            elif i == 8:
+                best_civs_8 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
+                best_civs_8 = ", ".join(sorted(set(([", ".join(civ) for civ in best_civs_8]))))
+                self.photo_8_page_2 = ImageTk.PhotoImage(photo)
+                button_8_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_8[0]}", justify='left')
+                button_8_page_2.config(font=("Arial", 12), image=self.photo_8_page_2, compound='left')
+                button_8_page_2.grid(row=2, column=1, padx=50, pady=0, sticky="nw")
+            elif i == 9:
+                best_civs_9 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
+                best_civs_9 = sorted(set(([", ".join(civ) for civ in best_civs_9])))
+                self.photo_9_page_2 = ImageTk.PhotoImage(photo)
+                button_9_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_9[0]}", justify='left')
+                button_9_page_2.config(font=("Arial", 12), image=self.photo_9_page_2, compound='left')
+                button_9_page_2.grid(row=3, column=1, padx=50, pady=0, sticky="nw")
+            i+=1
 
     def generate_maps_page_1(self):
 
