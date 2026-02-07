@@ -16,25 +16,26 @@ def main() -> None:
 class FormatsCombobox(ttk.Combobox):
     def __init__(self, parent):
         self.parent = parent
-        self.key: str = ""
-        game_formats: list[str] = ["Bo1", "Bo3", "Bo5", "Bo7", "Bo9", "Custom - not implemented"]
+        self.key: str = int
+        self.game_formats: dict[str, str] = {"Bo1": 1, "Bo3": 3, "Bo5": 5, 
+                                        "Bo7": 7, "Bo9": 9, "Custom - not implemented": -1}
         # ToDo: add "Custom" game format
-        self.formats_box = ttk.Combobox(parent, state="readonly", width=22, values=game_formats)
+        self.formats_box = ttk.Combobox(parent, state="readonly", width=22, values=[keys for keys in self.game_formats.keys()])
         self.formats_box.bind("<<ComboboxSelected>>", self.get_selected_key)
         self.formats_box.set("Select game format")
         self.formats_box.grid(row=1, column=1, sticky="e", padx=50, pady=20)
     
     def get_selected_key(self, event=None) -> str:
-        self.key = self.formats_box.get()
+        self.key = self.game_formats[self.formats_box.get()]
         print(self.key)
-        # messagebox.showinfo("window name", f"Format selected: {self.key}") # to remove/change
         return self.key
+        # messagebox.showinfo("window name", f"Format selected: {self.key}") # to remove/change
 
 
 class AoEApplication(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("TEST")
+        self.title("AoE IV Draft Master")
         self.geometry("1340x650")
         # self.resizable(False, False)
         self.tabControl = ttk.Notebook(self)
@@ -42,11 +43,12 @@ class AoEApplication(tk.Tk):
         self.tab2 = ttk.Frame(self.tabControl)
         self.tab3 = ttk.Frame(self.tabControl)
         self.tab4 = ttk.Frame(self.tabControl)
-        # self.photo = Image.open("D:/MelvinVSCode/AoE Draft Masta/Code/Przechwytywanie.png").resize((250, 250))
-        # self.photo = ImageTk.PhotoImage(self.photo)
         # page 1
         self.page_1_top_frame = ttk.Frame(self.tab1)
         self.page_1_bottom_frame = ttk.Frame(self.tab1)
+        self.game_format = FormatsCombobox(self.page_1_top_frame)  # must be there to retrieve key
+        self.save_indicator = tk.Label(self.page_1_top_frame, bg='red', width=3)
+        self.save_indicator.grid(row=1, column=1, sticky="ne", padx=210, pady=22)
         self.page_1()
         # page 2
         self.page_2_frame = ttk.Frame(self.tab2)
@@ -58,20 +60,15 @@ class AoEApplication(tk.Tk):
         self.maps_json: str = ""
         self.maps_json_path: str = ""
         self.existing_maps_paths: dict[str] = {}
-        self.game_format: str = ""
         self.selected_maps: dict[str] = {}
-        self.mainloop()
         # print(self.page_32)
         # frame.grid(row=0, column=0, padx=1000, pady=15)
 
 
     def page_1(self) -> None:
-        button_load_map_file = ttk.Button(self.page_1_top_frame, text="Load map file", command=self.load_maps_file).grid(row=1, column=0, sticky="w", padx=50, pady=20)
-        game_format = FormatsCombobox(self.page_1_top_frame)
+        button_load_map_file = ttk.Button(self.page_1_top_frame, text="Load map file", command=self.load_maps_file).grid(row=1, column=0, sticky="w", padx=50, pady=20) 
         button_set_name = ttk.Button(self.page_1_top_frame, text="Set name", command=self.set_show_name).grid(row=0, column=1, sticky="e", padx=130, pady=0)
-        button_save = ttk.Button(self.page_1_top_frame, text="Save", command=self.set_show_name, ).grid(row=1, column=1, sticky="ne", padx=240, pady=20)
-        # button_save = ttk.Button(self.page_1_bottom_frame, text="Save", command=self.set_show_name, ).grid(row=0, column=1, sticky="ns", padx=240, pady=0)
-        # button_save = ttk.Button(self.page_1_bottom_frame, text="Save", command=self.set_show_name, ).grid(row=1, column=1, sticky="ns", padx=240, pady=0)
+        button_save = ttk.Button(self.page_1_top_frame, text="Save", command=self.verify_save_allowed).grid(row=1, column=1, sticky="ne", padx=240, pady=20)        
 
         self.page_1_top_frame.columnconfigure(0, weight=1)
         self.page_1_top_frame.columnconfigure(1, weight=1)
@@ -89,30 +86,24 @@ class AoEApplication(tk.Tk):
         self.page_1_bottom_frame.rowconfigure(7, weight=1)
         self.page_1_top_frame.pack(expand=False, fill='both', side="top")
         self.page_1_bottom_frame.pack(expand=True, fill='both', side="bottom")
-        
     
     def page_2(self) -> None:
-        # photo = Image.open("D:/MelvinVSCode/AoE Draft Masta/Code/Przechwytywanie.png").resize((250, 250))
-        # self.photo = ImageTk.PhotoImage(photo)
-        # mylabel = tk.Label(self.page_2_frame, image=self.photo, background='black')
-        # mylabel.grid(row=1, column=1)
-        # checkbutton = tk.Checkbutton(self.page_2_main_frame, text="hahaha", image=photo)
-        # checkbutton.grid(row=0, column=0, sticky="")
         self.page_2_frame.columnconfigure(0, weight=1)
         self.page_2_frame.columnconfigure(1, weight=1)
         self.page_2_frame.rowconfigure(0, weight=1)
         self.page_2_frame.rowconfigure(1, weight=1)
         self.page_2_frame.pack(expand=True, fill='both', side="bottom")
-    
+        
+    def verify_save_allowed(self) -> None:
+        pass
+        # if 
+        # label.config(bg='green')
+
     def pages_desc(self) -> None:
         label_map_pool = ttk.Label(self.page_1_top_frame, text="Map pool", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
         label_best_civs = ttk.Label(self.page_2_frame, text="Best civs per map", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
         label_civs_draft = ttk.Label(self.tab3, text="Civs draft", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
         label_game_draft = ttk.Label(self.tab4, text="Game draft", font=("Times New Roman", 22)).grid(row=0, column=0, sticky='nw', padx=50, pady=25)
-
-
-
-
 
     def recreate_page(self, tab: ttk.Frame, index: int = None, full_clear: bool = False) -> None:
         if index is None and full_clear:
@@ -124,18 +115,12 @@ class AoEApplication(tk.Tk):
             tab.grid_slaves()[index].destroy()
 
     def initialize_pages(self) -> None:
-        # self.tab1.pack(expand=True, fill='both')
-        # self.tab1.columnconfigure(0, weight=1)
-        # self.tab1.columnconfigure(1, weight=1)
-        # self.tab1.rowconfigure(0, weight=1)
-        # self.tab1.rowconfigure(1, weight=4)
         self.tabControl.add(self.tab1, text="Page 1")
         self.tabControl.add(self.tab2, text="Page 2")
         self.tabControl.add(self.tab3, text="Page 3")
         self.tabControl.add(self.tab4, text="Page 4")
         self.tabControl.pack(expand=True, fill='both')
     
-        # self.tabControl.grid(row=0, column=0)
 
     def set_show_name(self) -> None:
         name = askstring("Input", "Enter your name (max 20 characters)")
@@ -149,7 +134,7 @@ class AoEApplication(tk.Tk):
 
     def load_maps_file(self) -> None:
         filename = askopenfile()
-        
+
         try:
             read_file = filename.read()
             # print(json.loads(read_file))
@@ -188,18 +173,27 @@ class AoEApplication(tk.Tk):
         else:
             print("missing map images: ", missing_map_images)
             return False
-    
-    def clicked(self, x, map_name, map_path):
+
+
+    def clicked(self, x: int, map_name: str, map_path: str) -> None:
         selected_maps = self.selected_maps  #updating selected_maps updates self.selected_maps as well
         if(x.get()==1):
+            # print("key: ", self.game_format.key)
             if map_name not in selected_maps:
                 selected_maps[map_name] = map_path
                 print("On ")
         else:
             del selected_maps[map_name]
             print("Off")
-        print(self.selected_maps)
-            
+        # print(self.selected_maps)
+        self.update_save_allowed_indicator()
+    
+    def update_save_allowed_indicator(self):
+        if len(self.selected_maps) == int(self.game_format.key):
+            self.save_indicator.config(bg='green')
+        else:
+            self.save_indicator.config(bg='red')
+
     def generate_maps_page_1(self):
 
         if len(self.maps_json['maps']) > 16:
