@@ -202,6 +202,17 @@ class AoEApplication(tk.Tk):
         self.bo_sign_page_2.config(text=f"Best of {self.game_format.key}")        
 
     def update_best_coverage_label(self) -> None:
+        text = ""
+        i = 0
+        for civ, counter in self.civs_counter.items():
+            if i<10:
+                print(civ, counter)
+                if (self.civs_counter[civ] >= 2 and i<len(self.civs_counter)):
+                    text += f"{civ}({counter}), "
+                elif (self.civs_counter[civ] >= 2 and i==len(self.civs_counter)):
+                    text += f"{civ}({counter})"
+            i+=1
+        print("text: ", text)
         best_coverage_label = tk.Label(self.page_2_bottom_frame, font=("Arial", 16))
         best_coverage_label.grid(row=5, column=0, padx=50, pady=0, sticky="w")
         best_coverage_label.configure(text="Best coverage: ")
@@ -214,78 +225,106 @@ class AoEApplication(tk.Tk):
             self.update_bo_x_sign()
             self.generate_maps_page_2()
             self.update_best_coverage_label()
+    
+    def best_coverage_counter(self, civs_counter: dict[str, int], map_specific_civs: list[str]) -> dict[str, int]:
+        for civ in map_specific_civs:
+            if civ not in civs_counter:
+                civs_counter[civ] = 1
+            else:
+                civs_counter[civ] += 1
+        return civs_counter
             
     def generate_maps_page_2(self) -> None:
         i = 1
         print(self.selected_maps)
-        
+        self.civs_counter: dict[str, int] = {}
+        print("counter1 ", self.civs_counter)
         for name, path in self.selected_maps.items():
             print(name, path)
             photo = Image.open(path).resize((85, 85))
             if i == 1:
                 best_civs_1 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
-                best_civs_1 = sorted(set(([", ".join(civ) for civ in best_civs_1])))
+                best_civs_1_sorted = max(sorted(", ".join(civ) for civ in best_civs_1))
+                best_civs_1 = best_civs_1_sorted.split(", ")
+                self.best_coverage_counter(civs_counter=self.civs_counter, map_specific_civs=best_civs_1)
                 self.photo_1_page_2 = ImageTk.PhotoImage(photo)
-                label_1_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_1[0]}", justify='left')
+                label_1_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_1_sorted}", justify='left')
                 label_1_page_2.config(font=("Arial", 12), image=self.photo_1_page_2, compound='left')
                 label_1_page_2.grid(row=0, column=0, padx=50, pady=0, sticky="nw")
             elif i == 2:
                 best_civs_2 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
-                best_civs_2 = sorted(set(([", ".join(civ) for civ in best_civs_2])))
+                best_civs_2_sorted = max(sorted(", ".join(civ) for civ in best_civs_2))
+                best_civs_2 = best_civs_2_sorted.split(", ")
+                self.best_coverage_counter(civs_counter=self.civs_counter, map_specific_civs=best_civs_2)
                 self.photo_2_page_2 = ImageTk.PhotoImage(photo)
-                label_2_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_2[0]}", justify='left')
+                label_2_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_2_sorted}", justify='left')
                 label_2_page_2.config(font=("Arial", 12), image=self.photo_2_page_2, compound='left')
                 label_2_page_2.grid(row=1, column=0, padx=50, pady=0, sticky="nw")
             elif i == 3:
                 best_civs_3 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
-                best_civs_3 = sorted(set(([", ".join(civ) for civ in best_civs_3])))
+                best_civs_3_sorted = max(sorted(", ".join(civ) for civ in best_civs_3))
+                best_civs_3 = best_civs_3_sorted.split(", ")
+                self.best_coverage_counter(civs_counter=self.civs_counter, map_specific_civs=best_civs_3)
                 self.photo_3_page_2 = ImageTk.PhotoImage(photo)
-                label_3_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_3[0]}", justify='left')
+                label_3_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_3_sorted}", justify='left')
                 label_3_page_2.config(font=("Arial", 12), image=self.photo_3_page_2, compound='left')
                 label_3_page_2.grid(row=2, column=0, padx=50, pady=0, sticky="nw")
             elif i == 4:
                 best_civs_4 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
-                best_civs_4 = sorted(set(([", ".join(civ) for civ in best_civs_4])))
+                best_civs_4_sorted = max(sorted(", ".join(civ) for civ in best_civs_4))
+                best_civs_4 = best_civs_4_sorted.split(", ")
+                self.best_coverage_counter(civs_counter=self.civs_counter, map_specific_civs=best_civs_4)
                 self.photo_4_page_2 = ImageTk.PhotoImage(photo)
-                label_4_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_4[0]}", justify='left')
+                label_4_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_4_sorted}", justify='left')
                 label_4_page_2.config(font=("Arial", 12), image=self.photo_4_page_2, compound='left')
                 label_4_page_2.grid(row=3, column=0, padx=50, pady=0, sticky="nw")
             elif i == 5:
                 best_civs_5 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
-                best_civs_5 = sorted(set(([", ".join(civ) for civ in best_civs_5])))
+                best_civs_5_sorted = max(sorted(", ".join(civ) for civ in best_civs_5))
+                best_civs_5 = best_civs_5_sorted.split(", ")
+                self.best_coverage_counter(civs_counter=self.civs_counter, map_specific_civs=best_civs_5)
                 self.photo_5_page_2 = ImageTk.PhotoImage(photo)
-                label_5_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_5[0]}", justify='left')
+                label_5_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_5_sorted}", justify='left')
                 label_5_page_2.config(font=("Arial", 12), image=self.photo_5_page_2, compound='left')
                 label_5_page_2.grid(row=4, column=0, padx=50, pady=0, sticky="nw")
             elif i == 6:
                 best_civs_6 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
-                best_civs_6 = sorted(set(([", ".join(civ) for civ in best_civs_6])))
+                best_civs_6_sorted = max(sorted(", ".join(civ) for civ in best_civs_6))
+                best_civs_6 = best_civs_6_sorted.split(", ")
+                self.best_coverage_counter(civs_counter=self.civs_counter, map_specific_civs=best_civs_6)
                 self.photo_6_page_2 = ImageTk.PhotoImage(photo)
-                label_6_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_6[0]}", justify='left')
+                label_6_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_6_sorted}", justify='left')
                 label_6_page_2.config(font=("Arial", 12), image=self.photo_6_page_2, compound='left')
                 label_6_page_2.grid(row=0, column=1, padx=50, pady=0, sticky="nw")
             elif i == 7:
                 best_civs_7 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
-                best_civs_7 = sorted(set(([", ".join(civ) for civ in best_civs_7])))
+                best_civs_7_sorted = max(sorted(", ".join(civ) for civ in best_civs_7))
+                best_civs_7 = best_civs_7_sorted.split(", ")
+                self.best_coverage_counter(civs_counter=self.civs_counter, map_specific_civs=best_civs_7)
                 self.photo_7_page_2 = ImageTk.PhotoImage(photo)
-                label_7_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_7[0]}", justify='left')
+                label_7_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_7_sorted}", justify='left')
                 label_7_page_2.config(font=("Arial", 12), image=self.photo_7_page_2, compound='left')
                 label_7_page_2.grid(row=1, column=1, padx=50, pady=0, sticky="nw")
             elif i == 8:
                 best_civs_8 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
-                best_civs_8 = ", ".join(sorted(set(([", ".join(civ) for civ in best_civs_8]))))
+                best_civs_8_sorted = max(sorted(", ".join(civ) for civ in best_civs_8))
+                best_civs_8 = best_civs_8_sorted.split(", ")
+                self.best_coverage_counter(civs_counter=self.civs_counter, map_specific_civs=best_civs_8)
                 self.photo_8_page_2 = ImageTk.PhotoImage(photo)
-                label_8_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_8[0]}", justify='left')
+                label_8_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_8_sorted}", justify='left')
                 label_8_page_2.config(font=("Arial", 12), image=self.photo_8_page_2, compound='left')
                 label_8_page_2.grid(row=2, column=1, padx=50, pady=0, sticky="nw")
             elif i == 9:
                 best_civs_9 = [i["best_civs"] for i in self.maps_json['maps'] if i.get("name") == name]
-                best_civs_9 = sorted(set(([", ".join(civ) for civ in best_civs_9])))
+                best_civs_9_sorted = max(sorted(", ".join(civ) for civ in best_civs_9))
+                best_civs_9 = best_civs_9_sorted.split(", ")
+                self.best_coverage_counter(civs_counter=self.civs_counter, map_specific_civs=best_civs_9)
                 self.photo_9_page_2 = ImageTk.PhotoImage(photo)
-                label_9_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_9[0]}", justify='left')
+                label_9_page_2 = tk.Label(self.page_2_bottom_frame, text=f" {name}\n\n\n Best civs for map: {best_civs_9_sorted}", justify='left')
                 label_9_page_2.config(font=("Arial", 12), image=self.photo_9_page_2, compound='left')
                 label_9_page_2.grid(row=3, column=1, padx=50, pady=0, sticky="nw")
             i+=1
+            print("counter: ", self.civs_counter)
 
     def generate_maps_page_1(self):
 
